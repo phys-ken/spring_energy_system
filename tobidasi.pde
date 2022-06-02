@@ -14,12 +14,12 @@ int h = 600;
 
 float springX;
 int springH = 50;
+float ballX;
 
 int ballY = 100;
 int ballr = 100;
 int ballX0 = 500;
 int springA = 200;
-
 int giza = 10;
 float gizaX;
 
@@ -40,6 +40,9 @@ void draw() {
   arrow(30, ballY + springH + 20, w - 100, ballY + springH + 20, 0, 0, 0);
   //ばねの描画
   springX  = ballX0 + springA * - 1 *  cos(t);
+  if (t < PI / 2) {
+    ballX = springX;} else {ballX  = ballX + 3;}
+  
   gizaX = (springX / giza) / 4;
   for (int i = 1; i < giza + 1; i ++) {
     line(gizaX * 4 * (i - 1), ballY, gizaX * 4 * (i - 1) + gizaX, ballY + springH);
@@ -48,18 +51,20 @@ void draw() {
     line(gizaX * 4 * (i - 1) + 3 * gizaX, ballY - springH, gizaX * 4 * (i - 1) + 4 * gizaX, ballY);
   }
   fill(255, 0, 0);    //赤で描画
-  ellipse(springX + ballr / 2, ballY, ballr, ballr);//ボールの描画
+  ellipse(ballX + ballr / 2, ballY, ballr, ballr);//ボールの描画
   
   barW = 80;  //バーの横幅を40ピクセルにする
   barH = 200;
   
   //バーとテキストを描画
   for (int i = 0; i < value.length; i ++) {  //value.lenghは配列の要素数を返す
-    value[0] = barH * pow(sin(t), 2);
-    if (keiFlag) {value[1]  = 0;}
-    else{
-      value[1] = barH * pow(cos(t), 2);}
-    value[2] = round(value[1] + value[0]);
+    if (t < PI / 2) {
+      value[0] = barH * pow(sin(t), 2);
+      if(keiFlag) {value[1]  = 0;}
+      else{
+        value[1] = barH * pow(cos(t), 2);}
+      value[2] = round(value[1] + value[0]);
+    }
     //バーのx座標, y座標を計算
     float x = barW * (1.5 * i) + 100;
     float y = height - value[i] - 100;
@@ -83,10 +88,8 @@ void draw() {
   else
   {  fill(0);    //黒で描画;
     text(titleB, w - 300, height - 100);}
-  
-  
-  
-  t = t + 0.02;
+  t = t + 0.01;
+  if (t > 2 * PI) {t = 0;}
 }
 
 void mousePressed() {
